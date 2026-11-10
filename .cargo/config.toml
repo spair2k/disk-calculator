@@ -1,0 +1,4 @@
+# Статически линкуем C runtime на Windows, чтобы dc.exe запускался
+# на машине без установленного Visual C++ Redistributable.
+[target.'cfg(windows)']
+rustflags = ["-C", "target-feature=+crt-static"]
