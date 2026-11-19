@@ -1,5 +1,10 @@
 # disk-calculator (Rust)
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/spair2k/disk-calculator)](https://github.com/spair2k/disk-calculator/releases)
+![Rust](https://img.shields.io/badge/rust-1.74%2B-orange)
+![Platform](https://img.shields.io/badge/platform-windows%20%7C%20linux%20%7C%20macos-lightgrey)
+
 DC — Disk Calculator: анализ заполнения папки одним консольным отчётом.
 Порт Python-проекта `DiskCalculator` на Rust.
 
