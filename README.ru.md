@@ -5,7 +5,8 @@
 ![Rust](https://img.shields.io/badge/rust-1.74%2B-orange)
 ![Platform](https://img.shields.io/badge/platform-windows%20%7C%20linux%20%7C%20macos-lightgrey)
 
-**English** | [Русский](README.ru.md)
+[![English](https://img.shields.io/badge/lang-English-blue)](README.md)
+[![Русский](https://img.shields.io/badge/язык-Русский-blue)](README.ru.md)
 
 DC — Disk Calculator: анализ заполнения папки одним консольным отчётом.
 Порт Python-проекта `DiskCalculator` на Rust.
