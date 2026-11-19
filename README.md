@@ -5,109 +5,111 @@
 ![Rust](https://img.shields.io/badge/rust-1.74%2B-orange)
 ![Platform](https://img.shields.io/badge/platform-windows%20%7C%20linux%20%7C%20macos-lightgrey)
 
-DC — Disk Calculator: анализ заполнения папки одним консольным отчётом.
-Порт Python-проекта `DiskCalculator` на Rust.
+**English** | [Русский](README.ru.md)
 
-**Ноль зависимостей**: только стандартная библиотека. JSON-парсер,
-сериализатор, анимация, работа с атрибутами Windows и правами POSIX
-реализованы вручную.
+DC — Disk Calculator: analyze folder disk usage with a single console report.
+A Rust port of the Python project `DiskCalculator`.
 
-Работа — только с метаданными (`read_dir` + `symlink_metadata`). Содержимое
-файлов никогда не открывается и не читается.
+**Zero dependencies**: standard library only. The JSON parser, serializer,
+animation, Windows attribute handling and POSIX permissions are implemented
+by hand.
 
-## Возможности
+Works with **metadata only** (`read_dir` + `symlink_metadata`). File contents
+are never opened or read.
 
-- анализ **одного уровня** каталога: папки и файлы, отсортированные по
-  размеру; у папок размер рекурсивный (все вложенные файлы);
-- маркер типа: `D` — папка, `F` — файл, `L` — ссылка;
-- двухпанельный отчёт: слева имя, справа бар заполнения, размер и доля;
-- псевдографика (`│─┼`, `█░`) или `-l/--legacy` — чистый ASCII (`| - +`, `#/-`);
-- анимация анализа в первой строке (змейка Браиля / спиннер) — только в TTY;
-- сессии: экспорт в JSON (`-e`) и открытие сохранённого отчёта; формат
-  совместим с Python-версией;
-- корректное выравнивание с кириллицей, CJK и эмодзи; обрезка длинных имён
-  по ширине терминала;
-- junction'ы и reparse point'ы Windows не разворачиваются — нет двойного
-  счёта и зацикливания.
+## Features
 
-## Сборка
+- **single-level** directory analysis: folders and files sorted by size;
+  folder size is recursive (all nested files);
+- type marker: `D` — folder, `F` — file, `L` — link;
+- two-pane report: name on the left, usage bar, size and share on the right;
+- pseudo-graphics (`│─┼`, `█░`) or `-l/--legacy` for pure ASCII (`| - +`, `#/-`);
+- analysis animation on the first line (Braille snake / spinner) — TTY only;
+- sessions: JSON export (`-e`) and opening a saved report; the format is
+  compatible with the Python version;
+- correct alignment with Cyrillic, CJK and emoji; long names are truncated
+  to the terminal width;
+- Windows junctions and reparse points are not followed — no double counting
+  or infinite loops.
 
-Нужен только Rust (1.74+), без сети и без `cargo add`:
+## Building
+
+Only Rust (1.74+) is required, no network, no `cargo add`:
 
 ```
 cargo build --release
 ```
 
-Готовый файл: `target\release\dc.exe` (Windows) или `target/release/dc`.
-Для обычной сборки — `cargo build`.
+The binary is `target\release\dc.exe` (Windows) or `target/release/dc`.
+For a regular build — `cargo build`.
 
-## Использование
+## Usage
 
 ```
-dc                        # отчёт по текущему каталогу
-dc C:\Users               # отчёт по папке
-dc -e D:\Data             # отчёт + экспорт сессии в storage/
-dc -l --top 10 .          # ASCII-отчёт, только 10 крупнейших
-dc report.json            # открыть сохранённую сессию
-dc --help                 # все параметры
+dc                        # report for the current directory
+dc C:\Users               # report for a folder
+dc -e D:\Data             # report + export session to storage/
+dc -l --top 10 .          # ASCII report, top 10 largest only
+dc report.json            # open a saved session
+dc --help                 # all options
 ```
 
-### Параметры
+### Options
 
-| Флаг | Назначение |
+| Flag | Purpose |
 |---|---|
-| `-e`, `--export` | экспорт результата в JSON-сессию |
-| `-l`, `--legacy` | ASCII вместо псевдографики |
-| `-n`, `--top N` | только первые N элементов |
-| `-w`, `--width N` | ограничить ширину отчёта (0 — без ограничения) |
-| `--storage-dir DIR` | каталог для сессий (по умолчанию `storage/`) |
-| `--stats` | статистика: файлы, папки, ошибки, время |
-| `--follow-links` | разворачивать ссылки (с защитой от циклов) |
-| `--no-animation` | отключить анимацию |
-| `-h`, `--help` | справка |
-| `-V`, `--version` | версия |
+| `-e`, `--export` | export the result to a JSON session |
+| `-l`, `--legacy` | ASCII instead of pseudo-graphics |
+| `-n`, `--top N` | only the first N items |
+| `-w`, `--width N` | limit the report width (0 — unlimited) |
+| `--storage-dir DIR` | directory for sessions (default `storage/`) |
+| `--stats` | statistics: files, folders, errors, time |
+| `--follow-links` | follow links (with cycle protection) |
+| `--no-animation` | disable animation |
+| `-h`, `--help` | help |
+| `-V`, `--version` | version |
 
-### Пример вывода
+### Example output
 
 ```
-Маркеры: D — папка, F — файл, L — ссылка
-Содержимое (один уровень, по размеру)  │  Заполнение относительно общего объёма
-───────────────────────────────────────┼───────────────────────────────────────
-D  docs                                │  ███████████████░░░░░░░░░░░░░░░ 1,5 КБ (50,0%)
-F  report.txt                          │  ██████████░░░░░░░░░░░░░░░░░░░░ 1,0 КБ (33,3%)
-Всего: 3,0 КБ
+Markers: D — folder, F — file, L — link
+Contents (single level, by size)  │  Usage relative to total size
+──────────────────────────────────┼───────────────────────────────────────
+D  docs                           │  ███████████████░░░░░░░░░░░░░░░ 1.5 KB (50.0%)
+F  report.txt                     │  ██████████░░░░░░░░░░░░░░░░░░░░ 1.0 KB (33.3%)
+Total: 3.0 KB
 ```
 
-## Отличия от Python-версии
+## Differences from the Python version
 
-Улучшения, не меняющие формат сессий:
+Improvements that do not change the session format:
 
-- исправлено округление на границах единиц: `1048575` Б — это `1,0 МБ`,
-  а не `1024 КБ`;
-- junction/reparse point'ы Windows помечаются как `L` и не обходятся;
-- циклы ссылок при `--follow-links` обрываются по посещённым каталогам;
-- нет рекурсии в обходе дерева — глубокая иерархия не роняет стек;
-- меньше `stat`-вызовов: метаданные берутся из уже полученного `symlink_metadata`;
-- имена файлов очищаются от управляющих/bidi-символов (защита терминала);
-- учитывается реальная ширина Unicode, длинные имена обрезаются;
-- сессии валидируются (версия, типы полей, лимит размера), запись атомарная;
+- fixed rounding at unit boundaries: `1048575` B is `1.0 MB`, not `1024 KB`;
+- Windows junction/reparse points are marked as `L` and not traversed;
+- symlink cycles with `--follow-links` are cut off by visited directories;
+- no recursion in tree traversal — deep hierarchies do not overflow the stack;
+- fewer `stat` calls: metadata is taken from the already obtained
+  `symlink_metadata`;
+- file names are cleaned of control/bidi characters (terminal protection);
+- real Unicode width is taken into account, long names are truncated;
+- sessions are validated (version, field types, size limit), writes are atomic;
 - `--stats`, `--top`, `--width`, `--follow-links`, `--no-animation`.
 
-Отличия в деталях:
+Differences in details:
 
-- время в сессии и имени файла — UTC (`...Z`), а не локальное;
-- `metadata` для POSIX содержит имена владельца/группы из `/etc/passwd`
-  и `/etc/group`, если они доступны;
-- при экспорте собираются только метаданные, при обычном отчёте — нет
-  (лишние системные вызовы не нужны).
+- time in the session and file name is UTC (`...Z`), not local;
+- `metadata` for POSIX contains owner/group names from `/etc/passwd`
+  and `/etc/group` when available;
+- during export only metadata is collected, during a regular report — not
+  (no unnecessary system calls).
 
-## Тесты
+## Tests
 
 ```
 cargo test
 ```
 
-Покрыты: форматирование размеров и границы единиц, ширина/обрезка Unicode,
-JSON (экранирование, суррогаты, защита от глубокой вложенности), рекурсивные
-размеры и симлинки, импорт/экспорт сессий, рендер и выравнивание, запуск
-бинарника целиком.
+Covered: size formatting and unit boundaries, Unicode width/truncation,
+JSON (escaping, surrogates, deep nesting protection), recursive sizes and
+symlinks, session import/export, rendering and alignment, and running the
+binary end-to-end.
